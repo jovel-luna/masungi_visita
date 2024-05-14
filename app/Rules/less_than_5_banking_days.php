@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 use Carbon\Carbon;
 use App\Models\Books\Book;
+use App\Models\BlockedDates\BlockedDate;
 use Illuminate\Support\Facades\Log;
 
 class less_than_5_banking_days implements Rule
@@ -29,20 +30,31 @@ class less_than_5_banking_days implements Rule
      */
     public function passes($attribute, $value)
     {
-
-        $excludeWeekends = function ($date) {
-            return $date->isWeekday(); // This will exclude weekends (Saturday and Sunday)
-        };
         
+        $BlockedDate = BlockedDate::all();
+        
+        $block_dates = array();
 
-        $difference = now()->diffInDaysFiltered($value, $excludeWeekends);
-        Log::info('TEST IF TRAIL WORKiNG 2');
-        if ($difference < 5  ) {
+        foreach($BlockedDate as $date){
+            $block_dates[] = Carbon::parse($date->date);
+        }
+
+        $booking = Book::where('id', $this->book_id)->first();
+   
+        $start = Carbon::now();
+        $end = Carbon::parse($booking->scheduled_at); 
+
+        $days = $start->diffInDaysFiltered(function (Carbon $date) use ($block_dates) {
+            return $date->isWeekday() && !in_array($date, $block_dates);
+        }, $end);
+
+        if ($days < 5  ) {
             return true;
         }
         else {
             return false;
         }
+        
     }
 
     /**

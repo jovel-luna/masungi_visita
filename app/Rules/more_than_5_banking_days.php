@@ -4,6 +4,11 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
+use Carbon\Carbon;
+use App\Models\Books\Book;
+use App\Models\BlockedDates\BlockedDate;
+use Illuminate\Support\Facades\Log;
+
 class more_than_5_banking_days implements Rule
 {
     /**
@@ -11,9 +16,9 @@ class more_than_5_banking_days implements Rule
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($book_id)
     {
-        //
+        $this->book_id = $book_id;
     }
 
     /**
@@ -25,13 +30,31 @@ class more_than_5_banking_days implements Rule
      */
     public function passes($attribute, $value)
     {
-        $difference = now()->diffInDays($value);
-        if ($difference > 5 && $difference < 10 ) {
+
+        $BlockedDate = BlockedDate::all();
+        
+        $block_dates = array();
+
+        foreach($BlockedDate as $date){
+            $block_dates[] = Carbon::parse($date->date);
+        }
+
+        $booking = Book::where('id', $this->book_id)->first();
+   
+        $start = Carbon::now();
+        $end = Carbon::parse($booking->scheduled_at); 
+
+        $days = $start->diffInDaysFiltered(function (Carbon $date) use ($block_dates) {
+            return $date->isWeekday() && !in_array($date, $block_dates);
+        }, $end);
+
+        if ($days > 5 && $days < 10 ) {
             return true;
         }
         else {
             return false;
         }
+
     }
 
     /**
