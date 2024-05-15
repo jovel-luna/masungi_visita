@@ -89,11 +89,11 @@ class TrailRequestReminderNotification extends Command
             ]);
 
             $validate_more_5 = Validator::make(
-                ['created_at' => $invoice->created_at], ['created_at' => new more_than_5_banking_days,
+                ['created_at' => $invoice->created_at], ['created_at' => new more_than_5_banking_days($invoice->book_id),
             ]);
 
             $validate_more_10 = Validator::make(
-                ['created_at' => $invoice->created_at], ['created_at' => new more_than_10_banking_days,
+                ['created_at' => $invoice->created_at], ['created_at' => new more_than_10_banking_days($invoice->book_id),
             ]);
 
             
@@ -120,7 +120,29 @@ class TrailRequestReminderNotification extends Command
             if($validate_more_5->passes()){
                 if(
                     //Carbon::parse($invoice->approved_at)->startOfDay()->diffInWeekDays(Carbon::now()->startOfDay()) === 3
-                    Carbon::parse($invoice->approved_at)->startOfDay()->addDays(3) <= Carbon::now()
+                    Carbon::parse($invoice->approved_at)->startOfDay()->addDays(3)->addHours(12) <= Carbon::now()
+                    && !$invoice->is_firstpayment_paid
+                    && !$invoice->rejected_reason
+                    && Carbon::now()->isStartOfDay()
+                ) {
+                    $this->sendEmail($invoice);
+                    /* Mark sent column as true */
+    
+                    DB::table('books')
+                    ->where('id',$invoice->book_id)
+                    ->whereNull('first_trail_request_reminder_email_sent_at')
+                    ->where('expired_visit_request_email_sent', 0)
+                    ->whereNull('deleted_at')
+                    ->update([
+                        'first_trail_request_reminder_email_sent_at' => Carbon::now()
+                    ]);
+                }
+
+             }
+             if($validate_more_10->passes()){
+                if(
+                    //Carbon::parse($invoice->approved_at)->startOfDay()->diffInWeekDays(Carbon::now()->startOfDay()) === 3
+                    Carbon::parse($invoice->approved_at)->startOfDay()->addDays(4)->addHours(12) <= Carbon::now()
                     && !$invoice->is_firstpayment_paid
                     && !$invoice->rejected_reason
                     && Carbon::now()->isStartOfDay()

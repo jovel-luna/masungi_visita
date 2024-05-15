@@ -16,7 +16,7 @@ class more_than_10_banking_days implements Rule
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($book_id)
     {
         $this->book_id = $book_id;
     }
@@ -56,13 +56,7 @@ class more_than_10_banking_days implements Rule
         }
 
 
-        $difference = now()->diffInDays($value);
-        if ($difference < 10 ) {
-            return true;
-        }
-        else {
-            return false;
-        }
+
     }
 
     /**

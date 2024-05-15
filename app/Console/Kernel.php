@@ -38,19 +38,19 @@ class Kernel extends ConsoleKernel
         $schedule->command('send:trail_request_reminder')
             ->daily();
 
-        // $schedule->command('send:thank_you')
-        //     ->daily();
+        $schedule->command('send:thank_you')
+            ->daily();
 
-        // /* Unused since the email workflow adjustments from the client */
-        // $schedule->command('send:remaining_balance_reminder')
-        //     ->daily();
+        /* Unused since the email workflow adjustments from the client */
+        $schedule->command('send:remaining_balance_reminder')
+            ->daily();
             
-        // $schedule->command('send:lapsed_payment')
-        //     ->dailyAt('00:00');
+        $schedule->command('send:lapsed_payment')
+            ->dailyAt('00:00');
 
-        // $schedule->command('send:expired_visit_request')
-        //     ->dailyAt('00:00');
-        // /* End of Masungi Notifications */
+        $schedule->command('send:expired_visit_request')
+            ->dailyAt('00:00');
+        /* End of Masungi Notifications */
         
         Log::info('Schedule Running '. Carbon::now());
     }
