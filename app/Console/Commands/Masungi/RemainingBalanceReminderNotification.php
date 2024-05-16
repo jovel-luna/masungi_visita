@@ -61,9 +61,19 @@ class RemainingBalanceReminderNotification extends Command
                     $book->where('bookable_type', 'App\Models\API\Masungi')
                         ->whereNull('second_trail_request_reminder_email_sent_at')
                         ->where('expired_visit_request_email_sent', 0)
+                        ->whereYear('created_at', date("Y"))
                         ->whereNull('deleted_at');
-                        
                 })->whereNotNull('approved_at')->get();
+
+                $invoicesCount = Invoice::whereHas('book', function($book) {
+                    $book->where('bookable_type', 'App\Models\API\Masungi')
+                        ->whereNull('second_trail_request_reminder_email_sent_at')
+                        ->where('expired_visit_request_email_sent', 0)
+                        ->whereYear('created_at', date("Y"))
+                        ->whereNull('deleted_at');
+                })->whereNotNull('approved_at')->count();
+
+                Log::info("remaining balance query count -" . $invoicesCount);  
 
         foreach ($invoices as $key => $invoice) {
             /* 

@@ -51,8 +51,18 @@ class LapsedPaymentNotification extends Command
                     $book->where('bookable_type', 'App\Models\API\Masungi')
                          ->whereNotNull('second_trail_request_reminder_email_sent_at')
                          ->where('lapsed_payment_email_sent', 0)
+                         ->whereYear('created_at', date("Y"))
                          ->whereNull('deleted_at');
                 })->get();
+
+                $invoicesCount = Invoice::whereHas('book', function($book) {
+                    $book->where('bookable_type', 'App\Models\API\Masungi')
+                         ->whereNotNull('second_trail_request_reminder_email_sent_at')
+                         ->where('lapsed_payment_email_sent', 0)
+                         ->whereYear('created_at', date("Y"))
+                         ->whereNull('deleted_at');
+                })->count();
+                Log::info("lapsed payment query count -" . $invoicesCount);  
 
         foreach ($invoices as $key => $invoice) {
             /* Old implementation 1: 3 is for 3 Banking Days */

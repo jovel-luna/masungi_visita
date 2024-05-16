@@ -39,8 +39,10 @@ class more_than_5_banking_days implements Rule
             $block_dates[] = Carbon::parse($date->date);
         }
 
-        $booking = Book::where('id', $this->book_id)->first();
-   
+        $booking = Book::where('id', $this->book_id)
+        ->first();
+        // Log::info($this->book_id);   
+        // Log::info($booking);   
         $start = Carbon::now();
         $end = Carbon::parse($booking->scheduled_at); 
 

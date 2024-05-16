@@ -50,8 +50,18 @@ class ThankYouNotification extends Command
         $invoices = Invoice::whereHas('book', function($book) {
                     $book->where('bookable_type', 'App\Models\API\Masungi')
                         ->where('thank_you_email_sent', 0)
+                        ->whereYear('created_at', date("Y"))
                         ->whereNull('deleted_at');
                 })->whereNotNull('approved_at')->get();
+
+                $invoicesCount = Invoice::whereHas('book', function($book) {
+                    $book->where('bookable_type', 'App\Models\API\Masungi')
+                        ->where('thank_you_email_sent', 0)
+                        ->whereYear('created_at', date("Y"))
+                        ->whereNull('deleted_at');
+                })->whereNotNull('approved_at')->count();
+
+                Log::info("thank you notif query count -" . $invoicesCount);   
 
         /*
             Condition 1: Check if the difference in days between the date today and the scheduled date is 1

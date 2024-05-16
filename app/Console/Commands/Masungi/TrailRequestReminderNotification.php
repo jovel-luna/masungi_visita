@@ -67,9 +67,20 @@ class TrailRequestReminderNotification extends Command
                     $book->where('bookable_type', 'App\Models\API\Masungi')
                          ->whereNull('first_trail_request_reminder_email_sent_at')
                          ->whereNull('deleted_at')
+                         ->whereYear('created_at', date("Y"))
                          ->where('expired_visit_request_email_sent', 0);
                 })->whereNotNull('approved_at')->get();
-
+        Log::info('TEST IF TRAIL WORKiNG 2');           
+     
+        $invoices_Count = Invoice::whereHas('book', function($book) {
+            $book->where('bookable_type', 'App\Models\API\Masungi')
+                 ->whereNull('first_trail_request_reminder_email_sent_at')
+                 ->whereNull('deleted_at')
+                 ->whereYear('created_at', date("Y"))
+                 ->where('expired_visit_request_email_sent', 0);
+                 
+        })->whereNotNull('approved_at')->count();
+        Log::info("trail request query count -" . $invoices_Count);     
         
         foreach ($invoices as $key => $invoice) {
             /*

@@ -56,9 +56,20 @@ class ExpiredVisitRequestNotification extends Command
             $book->where('bookable_type', 'App\Models\API\Masungi')
                 ->whereNotNull('first_trail_request_reminder_email_sent_at')
                 ->where('expired_visit_request_email_sent', 0)
+                ->whereYear('created_at', date("Y"))
                 ->whereNull('deleted_at');
         })->whereNotNull('approved_at')->get();
 
+
+        $invoicesCount = Invoice::whereHas('book', function ($book) {
+            $book->where('bookable_type', 'App\Models\API\Masungi')
+                ->whereNotNull('first_trail_request_reminder_email_sent_at')
+                ->where('expired_visit_request_email_sent', 0)
+                ->whereYear('created_at', date("Y"))
+                ->whereNull('deleted_at');
+        })->whereNotNull('approved_at')->count();
+
+        Log::info("expired visit request query count -" . $invoicesCount);   
         foreach ($invoices as $key => $invoice) {
             /* Old implementation: Send 5 banking days after approval */
             /*
