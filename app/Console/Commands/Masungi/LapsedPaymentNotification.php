@@ -51,7 +51,7 @@ class LapsedPaymentNotification extends Command
                     $book->where('bookable_type', 'App\Models\API\Masungi')
                          ->whereNotNull('second_trail_request_reminder_email_sent_at')
                          ->where('lapsed_payment_email_sent', 0)
-                         ->whereYear('created_at', date("Y"))
+                         ->whereMonth('created_at', date("M"))
                          ->whereNull('deleted_at');
                 })->get();
 
@@ -59,7 +59,7 @@ class LapsedPaymentNotification extends Command
                     $book->where('bookable_type', 'App\Models\API\Masungi')
                          ->whereNotNull('second_trail_request_reminder_email_sent_at')
                          ->where('lapsed_payment_email_sent', 0)
-                         ->whereYear('created_at', date("Y"))
+                         ->whereMonth('created_at', date("M"))
                          ->whereNull('deleted_at');
                 })->count();
                 Log::info("lapsed payment query count -" . $invoicesCount);  
@@ -71,7 +71,7 @@ class LapsedPaymentNotification extends Command
                 Condition 2: Check if invoice is paid for the remaining balance
                 Condition 3: Check if invoice is not rejected
             */
-            if(Carbon::parse($invoice->book->scheduled_at)->startOfDay()->subWeekdays(3) <= Carbon::now()
+            if(Carbon::parse($invoice->book->scheduled_at)->startOfDay()->addDays(1) <= Carbon::now()
                 && $invoice->is_firstpayment_paid
                 && !$invoice->is_secondpayment_paid
                 && !$invoice->is_fullpayment
