@@ -134,6 +134,8 @@ Vue.component('generated-emails-view', require('./views/admin/generated-emails/G
 Vue.component('bookings-v2-table', require('./views/admin/bookings/version2/BookingsTable.vue').default);
 Vue.component('bookings-v2-view', require('./views/admin/bookings/version2/BookingsView.vue').default);
 
+Vue.component('media-table', require('./views/admin/media/MediaTable.vue').default);
+
 Vue.component('copywritings-table', require('./views/admin/copywritings/CopywritingsTable.vue').default);
 Vue.component('copywriting-view', require('./views/admin/copywritings/CopywritingView.vue').default);
 

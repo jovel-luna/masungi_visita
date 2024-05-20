@@ -71,13 +71,7 @@ class ExpiredVisitRequestNotification extends Command
 
         Log::info("expired visit request query count -" . $invoicesCount);   
         foreach ($invoices as $key => $invoice) {
-            /* Old implementation: Send 5 banking days after approval */
-            /*
-                Condition 1: Check if the difference in days from when the trail request reminder email is 1
-                    Requirement: The expired visit request email should be sent 24 hours after the trail request reminder has been sent
-                Condition 2: Check if invoice is paid for the remaining balance; initial and full payment options will both fall under this condition
-                Condition 3: Check if invoice is not rejected
-            */
+
             $validate_less_3 = Validator::make(
                 ['created_at' => $invoice->created_at],
                 [
@@ -201,36 +195,6 @@ class ExpiredVisitRequestNotification extends Command
                 
             }
 
-            // if (
-            //     Carbon::parse($invoice->approved_at)->startOfDay()->addDays(4) <= Carbon::now()
-            //     //Carbon::parse($invoice->book->first_trail_request_reminder_email_sent_at)->diffInDays(Carbon::now()) === 1
-            //     && !$invoice->is_firstpayment_paid
-            //     /*  && !$invoice->is_paid */
-            //     && !$invoice->rejected_reason
-            // ) {
-            //     /* Filter and fetch dynamic notification */
-            //     $expired_visit_request = GeneratedEmail::where('notification_type', GeneratedEmail::MASUNGI_EXPIRED_VISIT_REQUEST)->where('email_to', GeneratedEmail::EMAIL_TO_MASUNGI)->first();
-            //     $main = $invoice->book->guests->where('main', 1)->first();
-            //     /* Send email notification to main guest */
-            //     $main->notify(new ExpiredVisitRequest($expired_visit_request, $invoice->book, $main));
-            //     /* Mark sent column as true */
-
-            //     Log::info('Expired sent');
-            //     DB::table('books')
-            //         ->where('id', $invoice->book_id)
-            //         ->whereNotNull('first_trail_request_reminder_email_sent_at')
-            //         ->where('expired_visit_request_email_sent', 0)
-            //         ->whereNull('deleted_at')
-            //         ->update([
-            //             'deleted_at' => Carbon::now(),
-            //             'expired_visit_request_email_sent' => 1
-            //         ]);
-
-            //     // $invoice->book->update([
-            //     //     'deleted_at' => Carbon::now(),
-            //     //     'expired_visit_request_email_sent' => 1
-            //     // ]);
-            // }
         }
     }
 }

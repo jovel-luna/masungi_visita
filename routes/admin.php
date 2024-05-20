@@ -500,6 +500,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
             Route::post('calendar/fetch', 'CalendarFetchController@fetch')->name('calendar.fetch');
         });
 
+        Route::namespace('Media')->group(function() {
+            Route::resource('media', 'MediaController');
+        });
+
+
         Route::namespace('Books')->group(function() {
             Route::get('bookings/{selectedDate?}/{destination?}/{experience?}/{destination_name?}', 'BookController@index')->name('bookings.index');
             Route::get('bookings/create/{selectedDate?}/{destination?}/{experience?}/{destination_name?}', 'BookController@create')->name('bookings.create');

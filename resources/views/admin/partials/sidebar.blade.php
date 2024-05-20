@@ -259,6 +259,19 @@
                         </a>
                         <ul class="nav nav-treeview">
                             @if ($self->hasAnyPermission(['admin.pages.crud']))
+                            <li class="nav-item">
+                                <a href="{{ route('admin.media.index') }}" class="nav-link {{ $checker->route->areOnRoutes([
+                                    'admin.pages.index','admin.pages.create','admin.pages.show',
+                                ]) }}">
+                                    <i class="nav-icon far fa-circle"></i>
+                                    <p>
+                                        Media Library
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
+
+                            @if ($self->hasAnyPermission(['admin.pages.crud']))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.pages.index') }}" class="nav-link {{ $checker->route->areOnRoutes([
                                         'admin.pages.index','admin.pages.create','admin.pages.show',

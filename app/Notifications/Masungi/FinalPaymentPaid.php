@@ -34,7 +34,7 @@ class FinalPaymentPaid extends Notification
         $this->notification->message = str_replace('[QR Code]', $booking_details->renderImagePath('qr_code_path'), $notification->message);
 
 
-        $this->notification->message = str_replace('[IMAGE]', '<img src="https://dev.websiteprojectupdates.com/nmrha/wp-content/uploads/2024/04/logo.png">', $notification->message);
+        // $this->notification->message = str_replace('[IMAGE]', '<img src="https://dev.websiteprojectupdates.com/nmrha/wp-content/uploads/2024/04/logo.png">', $notification->message);
 
         // Extract src attribute value from [IMAGE src='src here'] tag
         // preg_match('/\[IMAGE src=\'(.*?)\'\]/', $notification->message, $matches);
