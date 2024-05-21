@@ -6,13 +6,25 @@
             ref="data-table"
             :headers="headers"
             :filters="filters"
+            :fetch-url="fetchUrl"
+            :no-action="noAction"
             :disabled="disabled"
             :per-page="20"
             order-by="id"
             order-desc
-
-            :items="media"
+            @load="load"
         >
+            <template v-slot:body="{ items }">
+                <tr v-for="item in items" :key="item.id">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.url }}</td>
+                    <td>{{ item.created_at }}</td>
+                    <td>
+                        <view-button :url="item.media_url" />
+                    </td>
+                </tr>
+            </template>
         </data-table>
 
         <loader :loading="loading"></loader>
@@ -43,33 +55,13 @@ export default {
         }
     },
 
-    data() {
-        return {
-            media: [
-                { id: 1, media_name: "Name 1", media_url: "url1", created_at: "2023-01-01" },
-                { id: 2, media_name: "Name 2", media_url: "url2", created_at: "2023-01-02" },
-                { id: 3, media_name: "Name 3", media_url: "url3", created_at: "2023-01-03" }
-            ],
-            // filters: {},
-            // fetchUrl: "/api/media",
-            // noAction: false,
-            // disabled: false,
-            // loading: false
-        };
-    },
-
     mixins: [ListMixin, NumberFormat],
     components: {
         "search-form": SearchForm,
         "view-button": ViewButton,
         "action-button": ActionButton,
         selector: Select
-    },
+    }
 
-    // methods: {
-    //     load() {
-    //         // Implement the data loading logic here
-    //     }
-    // }
 };
 </script>

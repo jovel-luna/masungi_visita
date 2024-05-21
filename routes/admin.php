@@ -528,6 +528,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
             Route::post('reservations/fetch?archived=1', 'BookingFetchController@fetch')->name('bookings-version2.fetch-archive');
         });
 
+        Route::namespace('Media')->group(function (){
+            Route::post('media/fetch', 'MediaController@fetchall')->name('media.fetchall');
+
+        });
+
         Route::namespace('Fees')->group(function() {
             Route::get('fees', 'FeesController@index')->name('fees.index');
             Route::get('fees/create', 'FeesController@create')->name('fees.create');

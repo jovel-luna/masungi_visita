@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Media;
 
-use App\Models\Media;
+use App\Models\Media\Media;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,7 +15,16 @@ class MediaController extends Controller
      */
     public function index()
     {
-        return view('admin.media.index');
+        $media = Media::all();
+        return view('admin.media.index')->with('media', $media);
+    }
+
+    public function fetchall(){
+        $media = Media::all();
+
+        return response()->json([
+            'media' => $media,
+        ]);
     }
 
     /**
