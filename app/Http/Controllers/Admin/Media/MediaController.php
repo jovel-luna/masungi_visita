@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin\Media;
 use App\Models\Media\Media;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+
 
 class MediaController extends Controller
 {
@@ -34,7 +37,7 @@ class MediaController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.media.create');
     }
 
     /**
@@ -45,7 +48,17 @@ class MediaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Log::info($request);
+        $path = $request->file('image_upload')->store('media', 'public');
+        $path = "/storage/" . $path;
+        
+        Media::create([
+            'name' => $request->title,
+            'url' => $path
+        ]);
+
+        return redirect()->route('admin.media.index');
+
     }
 
     /**

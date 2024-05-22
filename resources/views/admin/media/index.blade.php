@@ -1,9 +1,6 @@
 @extends('admin.master')
-
 @section('meta:title', 'Media Library')
-
 @section('content')
-
 
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -20,7 +17,7 @@
             </div>
 
             <div class="mb-4">
-                <a href="" class="btn btn-primary text-white">
+                <a href="{{route('admin.media.create')}}" class="btn btn-primary text-white">
                     <i class="fa fa-plus"></i>
                     Add Media
                 </a>
