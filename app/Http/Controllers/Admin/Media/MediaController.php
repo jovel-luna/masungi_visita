@@ -98,11 +98,13 @@ class MediaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\media  $media
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(media $media)
+    public function destroy($id)
     {
-        //
+        // $media = Media::find($id);
+
+        
     }
 }

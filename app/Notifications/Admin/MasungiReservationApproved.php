@@ -6,6 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Log;
+
 
 use App\Helpers\NumberHelpers;
 use Carbon\Carbon;
@@ -26,6 +28,19 @@ class MasungiReservationApproved extends Notification
     {
         $this->invoice = $invoice;
         $this->notification = $notification;
+
+        // Log::info($notification->message);
+        $pattern = '/<a href="([^"]+)">.*<\/a>/';
+
+        $this->notification->message = preg_replace_callback($pattern, function($matches) {
+            // Extract the href value
+            $href = $matches[1];
+            // Create the img tag with the href value as the src attribute
+            return '<img src="' . htmlspecialchars($href, ENT_QUOTES, 'UTF-8') . '" alt="Image">';
+        }, $this->notification->message);
+
+        Log::info('current email here');
+        Log::info($this->notification->message);
 
         $masungi_url = config('masungi.url');
         $payment = $invoice->grand_total;
@@ -62,7 +77,11 @@ class MasungiReservationApproved extends Notification
         $this->notification->message = str_replace('[Month Day, Year]', $due_date, $notification->message);
         $this->notification->message = str_replace('(Month Day, Year)', Carbon::parse($invoice->book->scheduled_at)->subWeekdays(4)->format('F d, Y') . ' 11:59 PM', $notification->message);
         $this->notification->message = str_replace('[Month day, Year 00:00 AM/PM]', $due_date .  " 11:59 PM", $notification->message);
-    
+        $this->notification->message = str_replace('[IMG]', '<img src="https://visita.masungigeoreserve.com/storage/images/5ddb3892bb8fcSe2CjH4qkEAcWnrhpjsODrc3LqA1lcANmINXBGSX.png">', $notification->message); 
+
+
+
+
     }
 
     /**
