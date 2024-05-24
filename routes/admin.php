@@ -530,6 +530,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
 
         Route::namespace('Media')->group(function (){
             Route::post('media/fetch', 'MediaController@fetchall')->name('media.fetchall');
+            Route::post('media/delete', 'MediaController@delete_media')->name('media.delete');
 
         });
 

@@ -67,9 +67,12 @@ class MediaController extends Controller
      * @param  \App\media  $media
      * @return \Illuminate\Http\Response
      */
-    public function show(media $media)
+    public function show($id)
     {
-        //
+        $media = Media::find($id);
+        Log::info($media);
+        return view('admin.media.show')->with('media', $media);
+
     }
 
     /**
@@ -101,10 +104,23 @@ class MediaController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        // $media = Media::find($id);
+        //        
+    }
 
-        
+    public function delete_media(Request $request) {
+        Log::info('media id');
+        Log::info($request->id);
+
+        $media = Media::find($request->id); // Retrieve the model instance by ID
+        if ($media) {
+            unlink(public_path() . $media->url);
+
+            $media->delete(); // Delete the model instance
+            Log::info('media deleted');
+        }
+
+        return redirect()->route('admin.media.index');
     }
 }
